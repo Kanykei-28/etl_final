@@ -8,8 +8,9 @@ from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
+import dash_bootstrap_components as dbc
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]) 
 
 
 #exercise 1
@@ -110,27 +111,34 @@ def update(year):
 
 
 
-app.layout = html.Div(children=[
-    html.H1(children='HR Analysis Dashboard', style={"text-align": "center"}),
-    html.P("Exercise 2", style={'textAlign': 'center', "padding": "10px", "fontSize": "20px", "backgroundColor": "#4744ff", "color": "beige", "margin": "0px -12px", "borderTopLeftRadius": "8px", "borderTopRightRadius": "8px", "marginBottom":"30px"}),
+app.layout = html.Div(children=[ 
+    dbc.Row([html.H1(children='HR Analysis Dashboard', style={"text-align": "center"})]),
+    dbc.Row([
+
+        dbc.Col([
+            html.P("Diagram", style={'textAlign': 'center', "padding": "10px", "fontSize": "20px", "margin": "0px -12px"}), 
+            html.Img(id='picture', src=app.get_asset_url('erd_from_sqlite.png'), className="picture")], style = {"padding":"10px"}, className="col-3"), 
+        dbc.Col([
+            dbc.Row([html.P("Exercise 2", style={'textAlign': 'center', "padding": "10px", "fontSize": "20px", "backgroundColor": "#4744ff", "color": "beige", "margin": "0px -12px", "borderTopLeftRadius": "8px", "borderTopRightRadius": "8px", "marginBottom":"30px"}),
     dcc.Graph(
         id='input2',
         figure = fig
-    ),
-    html.H1(),
+    )]),
+            dbc.Row([html.H1(),
     html.P("Exercise 3", style={'textAlign': 'center', "padding": "10px", "fontSize": "20px", "backgroundColor": "#4744ff", "color": "beige", "margin": "0px -12px", "borderTopLeftRadius": "8px", "borderTopRightRadius": "8px", "marginBottom":"30px"}),
     dcc.RangeSlider(0, max_salary, 1000, value=[0, max_salary],
     id="input3"),
     dcc.Graph(id="output3"), 
-    html.H1(),
-    html.P("Exercise 4", style={'textAlign': 'center', "padding": "10px", "fontSize": "20px", "backgroundColor": "#4744ff", "color": "beige", "margin": "0px -12px", "borderTopLeftRadius": "8px", "borderTopRightRadius": "8px", "marginBottom":"30px"}),
+    html.H1()]), 
+        dbc.Row([html.P("Exercise 4", style={'textAlign': 'center', "padding": "10px", "fontSize": "20px", "backgroundColor": "#4744ff", "color": "beige", "margin": "0px -12px", "borderTopLeftRadius": "8px", "borderTopRightRadius": "8px", "marginBottom":"30px"}),
     dcc.Dropdown(years,
                 value='all',
                 placeholder="6 months to19 Dec 2022",
                 id="years"
                              ),
-        dcc.Graph(id="output4"),
-], style = {"padding":"10px"})
+        dcc.Graph(id="output4")])
+        ]),
+    ])], style = {"padding":"10px"})
 
 @app.callback(
 Output('output3', 'figure'),
@@ -170,4 +178,5 @@ def update_output(value1):
 
 if __name__ == '__main__':
     app.run_server("0.0.0.0", debug=False, port=int(os.environ.get('PORT', 8000)))
-server = app.server
+    server = app.server
+
